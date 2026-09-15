@@ -1,10 +1,9 @@
-from repositories import RoomsRepositories
-from schemas import RoomCreate
+from .repositories import RoomRepository
+from .schemas import RoomCreate
 
-class RoomsService:
-    def __init__(self, repo: RoomsRepositories):
+class RoomService:
+    def __init__(self, repo: RoomRepository):
         self.repo = repo
-        pass
 
     async def create_room(self, room: RoomCreate):
-        return RoomsRepositories.create()
+        return await self.repo.create(room)

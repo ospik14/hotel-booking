@@ -1,6 +1,9 @@
 from sqlalchemy.ext.asyncio import AsyncSession
+from .schemas import RoomCreate, RoomResponse
 
-class RoomsRepositories:
+class RoomRepository:
     def __init__(self, session: AsyncSession):
         self.session = session
-        pass 
+
+    async def create(self, room: RoomCreate): 
+        return RoomResponse(**room.model_dump(), id=1) 
