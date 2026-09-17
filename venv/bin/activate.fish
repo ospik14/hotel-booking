@@ -33,7 +33,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV '/home/ospikk/Документи/ItProjects/Fastapi/Meeting Rooms Booking/venv'
+set -gx VIRTUAL_ENV '/home/ospikk/Документи/ItProjects/Fastapi/MeetingRoomsBooking/venv'
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/"bin $PATH
