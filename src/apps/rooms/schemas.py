@@ -6,3 +6,6 @@ class RoomCreate(BaseModel):
 
 class RoomResponse(RoomCreate):
     id: int
+
+    class Config:
+        from_attributes = True

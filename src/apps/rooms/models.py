@@ -3,6 +3,7 @@ from sqlalchemy import String
 from core.db.session import Base
 
 class Room(Base):
+    __tablename__='rooms'
     id: Mapped[int] = mapped_column(
         primary_key=True, 
         autoincrement=True

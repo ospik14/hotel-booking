@@ -1,7 +1,6 @@
 from fastapi import Depends
 from typing import Annotated
 from .services import RoomService
-from .repositories import RoomRepository
 from core.db.session import session_maker
 from core.db.uow import UnitOfWork
 

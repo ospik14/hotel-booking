@@ -8,5 +8,5 @@ router = APIRouter(
 )
 
 @router.post('/')
-async def create_room(room: RoomCreate, service: room_service):
-    return await service.create_room(room)
+async def create_room(room_request: RoomCreate, service: room_service):
+    return await service.create_room(room_request)
