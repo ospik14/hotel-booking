@@ -1,5 +1,6 @@
 from apps.rooms.repositories import RoomRepository
 
+
 class UnitOfWork:
     def __init__(self, session_maker):
         self.session_maker = session_maker

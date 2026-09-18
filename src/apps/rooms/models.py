@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy import String
+from sqlalchemy import String, CheckConstraint
 from core.db.session import Base
 
 class Room(Base):
@@ -8,5 +8,5 @@ class Room(Base):
         primary_key=True, 
         autoincrement=True
     )
-    name: Mapped[str] = mapped_column(String(255))
-    capacity: Mapped[int]
+    name: Mapped[str] = mapped_column(String(255), unique=True)
+    capacity: Mapped[int] = mapped_column(CheckConstraint('capacity > 0'))

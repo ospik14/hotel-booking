@@ -1,0 +1,2 @@
+class RoomAlreadyExistsError(Exception):
+    pass
