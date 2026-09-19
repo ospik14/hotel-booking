@@ -1,9 +1,9 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, NoResultFound
 from sqlalchemy import insert, select
 from .models import Room
 from .schemas import RoomCreate
-from core.exceptions import RoomAlreadyExistsError
+from core.exceptions import RoomAlreadyExistsError, RoomNotFoundError
 
 class RoomRepository:
     def __init__(self, session: AsyncSession):
@@ -19,7 +19,13 @@ class RoomRepository:
         return result.scalar_one()
 
     async def get(self, id: int):
-        stmt = select(Room).where(Room.id == id)
-        result = await self.session.execute(stmt)
+        try:
+            stmt = select(Room).where(Room.id == id)
+            result = await self.session.execute(stmt)
 
-        return result.scalar_one()
+            return result.scalar_one()
+        except NoResultFound:
+            raise RoomNotFoundError()
+
+    async def get_list(self, filters):
+        return
