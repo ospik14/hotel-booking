@@ -19,9 +19,15 @@ class RoomService:
 
     async def get_rooms(self, filters: RoomFilters):
         async with self.uow as uow:
-            rooms = await uow.rooms.get_list()
+            rooms = await uow.rooms.get_list(filters)
+
+        return [
+            RoomResponse.model_validate(room) for room in rooms
+        ]
 
     async def update_room(self, id: int, room_upd: RoomUpdate):
         async with self.uow as uow:
-            room = uow.rooms.get(id)
+            room = await uow.rooms.update(id, room_upd)
+
+        return room
             

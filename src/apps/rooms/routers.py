@@ -34,4 +34,4 @@ async def update_room(
     room_upd: RoomUpdate, 
     service: room_service
 ):
-    return
+    return await service.update_room(id, room_upd)

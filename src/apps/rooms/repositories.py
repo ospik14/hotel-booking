@@ -1,8 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError, NoResultFound
-from sqlalchemy import insert, select
+from sqlalchemy import insert, select, update
 from .models import Room
-from .schemas import RoomCreate
+from .schemas import RoomCreate, RoomUpdate
 from core.exceptions import RoomAlreadyExistsError, RoomNotFoundError
 
 class RoomRepository:
@@ -27,5 +27,28 @@ class RoomRepository:
         except NoResultFound:
             raise RoomNotFoundError()
 
-    async def get_list(self, filters):
-        return
+    async def get_list(self, filters: list):
+        conditions = []
+        if filters.capacity_gte is not None:
+            conditions.append(Room.capacity >= filters.capacity_gte)
+        if filters.capacity_lte is not None:
+            conditions.append(Room.capacity <= filters.capacity_lte)
+        if filters.name_contains is not None:
+            conditions.append(Room.name.ilike(f'%{filters.name_contains}%'))
+
+        stmt = select(Room).where(*conditions)
+        result = await self.session.execute(stmt)
+
+        return result.scalars().all()
+
+    async def update(self, id: int, room_upd: RoomUpdate):
+        try:
+            stmt = update(Room) \
+            .where(Room.id == id) \
+            .values(**room_upd.model_dump(exclude_unset=True)) \
+            .returning(Room)
+            result = await self.session.execute(stmt)
+
+            return result.scalar_one()
+        except NoResultFound:
+            raise RoomNotFoundError

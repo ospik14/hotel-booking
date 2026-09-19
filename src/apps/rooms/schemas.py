@@ -18,4 +18,4 @@ class RoomFilters(BaseModel):
 
 class RoomUpdate(BaseModel):
     name: Optional[str] = Field(default=None)
-    capacity: Optional[str] = Field(default=None)
+    capacity: Optional[int] = Field(default=None)
