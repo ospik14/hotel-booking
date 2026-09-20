@@ -25,7 +25,7 @@ async def get_room_by_id(
 async def get_rooms(
     service: room_service,
     filters: RoomFilters = Depends()
-):
+) -> RoomResponse:
     return await service.get_rooms(filters)
 
 @router.patch('/{id}/')
@@ -33,5 +33,5 @@ async def update_room(
     id: int, 
     room_upd: RoomUpdate, 
     service: room_service
-):
+) -> RoomResponse:
     return await service.update_room(id, room_upd)

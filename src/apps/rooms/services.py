@@ -1,5 +1,6 @@
 from core.db.uow import UnitOfWork
 from .schemas import RoomCreate, RoomResponse, RoomFilters, RoomUpdate
+from core.exceptions import EmptyRequestForUpdateError
 
 class RoomService:
     def __init__(self, uow: UnitOfWork):
@@ -17,7 +18,7 @@ class RoomService:
 
         return RoomResponse.model_validate(room)
 
-    async def get_rooms(self, filters: RoomFilters):
+    async def get_rooms(self, filters: RoomFilters) -> RoomResponse:
         async with self.uow as uow:
             rooms = await uow.rooms.get_list(filters)
 
@@ -25,9 +26,12 @@ class RoomService:
             RoomResponse.model_validate(room) for room in rooms
         ]
 
-    async def update_room(self, id: int, room_upd: RoomUpdate):
+    async def update_room(self, id: int, room_upd: RoomUpdate) -> RoomResponse:
+        if not room_upd.name and not room_upd.capacity:
+            raise EmptyRequestForUpdateError()
+        
         async with self.uow as uow:
             room = await uow.rooms.update(id, room_upd)
 
-        return room
+        return RoomResponse.model_validate(room)
             

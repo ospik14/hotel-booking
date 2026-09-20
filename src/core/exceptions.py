@@ -3,3 +3,6 @@ class RoomAlreadyExistsError(Exception):
 
 class RoomNotFoundError(Exception):
     pass
+
+class EmptyRequestForUpdateError(Exception):
+    pass
