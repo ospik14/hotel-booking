@@ -6,3 +6,6 @@ class RoomNotFoundError(Exception):
 
 class EmptyRequestForUpdateError(Exception):
     pass
+
+class BookingOverlapError(Exception):
+    pass

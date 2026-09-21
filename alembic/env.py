@@ -18,6 +18,8 @@ sys.path.insert(0, root_path)
 
 from src.core.db.session import Base
 from src.apps.rooms.models import Room
+from src.apps.bookings.models import Booking
+from src.apps.users.models import User
 
 config = context.config
 

@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
-from .exceptions import RoomAlreadyExistsError, RoomNotFoundError, EmptyRequestForUpdateError
+from .exceptions import RoomAlreadyExistsError, RoomNotFoundError, \
+EmptyRequestForUpdateError, BookingOverlapError
 
 async def room_alredy_exists(request, exc):
     return JSONResponse(status_code=409, content={'detail': 'room alredy exists'})
@@ -11,7 +12,11 @@ async def room_not_found(request, exc):
 async def empty_request(request, exc):
     return JSONResponse(status_code=400, content={'detail': 'empty update request'})
 
+async def booking_overlap(request, exc):
+    return JSONResponse(status_code=409, content={'detail': 'booking overlap'})
+
 def setup_exception_handlers(app: FastAPI):
     app.add_exception_handler(RoomAlreadyExistsError, room_alredy_exists)
     app.add_exception_handler(RoomNotFoundError, room_not_found)
     app.add_exception_handler(EmptyRequestForUpdateError, empty_request)
+    app.add_exception_handler(BookingOverlapError, booking_overlap)
