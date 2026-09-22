@@ -9,3 +9,6 @@ class EmptyRequestForUpdateError(Exception):
 
 class BookingOverlapError(Exception):
     pass
+
+class RoomNotExistsError(Exception):
+    pass
