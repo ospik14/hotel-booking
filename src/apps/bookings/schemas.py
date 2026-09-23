@@ -1,4 +1,6 @@
-from pydantic import BaseModel
+from typing import Optional
+
+from pydantic import BaseModel, Field
 from datetime import datetime
 
 class BookingCreate(BaseModel):
@@ -13,3 +15,7 @@ class BookingResponse(BookingCreate):
 
     class Config:
         from_attributes = True
+
+class BookingFilters(BaseModel):
+    user_id: Optional[int] = Field(default=None)
+    room_id: Optional[int] = Field(default=None)

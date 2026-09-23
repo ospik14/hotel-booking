@@ -1,5 +1,5 @@
-from fastapi import APIRouter
-from .schemas import BookingCreate
+from fastapi import APIRouter, Depends
+from .schemas import BookingCreate, BookingFilters
 from .deps import booking_service
 
 router = APIRouter(
@@ -10,3 +10,7 @@ router = APIRouter(
 @router.post('/')
 async def create_booking(booking: BookingCreate, service: booking_service):
     return await service.create_booking(booking)
+
+@router.get('/')
+async def get_bookings(service: booking_service, filters: BookingFilters = Depends()):
+    return await service.get_bookings(filters)
