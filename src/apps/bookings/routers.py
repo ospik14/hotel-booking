@@ -11,6 +11,6 @@ router = APIRouter(
 async def create_booking(booking: BookingCreate, service: booking_service):
     return await service.create_booking(booking)
 
-@router.get('/')
-async def get_bookings(service: booking_service, filters: BookingFilters = Depends()):
-    return await service.get_bookings(filters)
+@router.get('/my/')
+async def get_bookings(service: booking_service, user_id: int): # temporarily
+    return await service.get_bookings(user_id)

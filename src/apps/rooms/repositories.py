@@ -1,7 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError, NoResultFound
-from sqlalchemy import insert, select, update
+from sqlalchemy import insert, select, update, and_
 from .models import Room
+from apps.bookings.models import Booking
 from .schemas import RoomCreate, RoomUpdate, RoomFilters
 from core.exceptions import RoomAlreadyExistsError, RoomNotFoundError
 
@@ -36,7 +37,21 @@ class RoomRepository:
         if filters.name_contains is not None:
             conditions.append(Room.name.ilike(f'%{filters.name_contains}%'))
 
-        stmt = select(Room).where(*conditions)
+        stmt = select(Room) 
+
+        if filters.check_in and filters.check_out:
+            stmt = stmt.outerjoin(
+                    Booking, 
+                    and_(
+                        Booking.room_id == Room.id,
+                        Booking.check_in_date < filters.check_out,
+                        Booking.check_out_date > filters.check_in
+                    )
+                ).where(Booking.id.is_(None))
+
+        if conditions:
+            stmt = stmt.where(*conditions)
+            
         result = await self.session.execute(stmt)
 
         return result.scalars().all()

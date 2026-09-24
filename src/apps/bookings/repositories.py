@@ -31,14 +31,8 @@ class BookingRepository:
 
         return result.scalar_one()
 
-    async def get_list(self, filters: BookingFilters):
-        conditions = []
-        if filters.room_id is not None:
-            conditions.append(Booking.room_id == filters.room_id)
-        if filters.user_id is not None:
-            conditions.append(Booking.user_id == filters.user_id)
-        
-        stmt = select(Booking).where(*conditions)
+    async def get_list(self, user_id: int):
+        stmt = select(Booking).where(Booking.user_id == user_id)
         result = await self.session.execute(stmt)
 
         return result.scalars().all()

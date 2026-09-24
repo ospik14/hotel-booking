@@ -12,3 +12,6 @@ class BookingOverlapError(Exception):
 
 class RoomNotExistsError(Exception):
     pass
+
+class IncompleteDataError(Exception):
+    pass

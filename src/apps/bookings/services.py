@@ -11,9 +11,9 @@ class BookingService:
 
         return BookingResponse.model_validate(booking)
 
-    async def get_bookings(self, filters: BookingFilters):
+    async def get_bookings(self, user_id: int):
         async with self.uow as uow:
-            bookings = await uow.bookings.get_list(filters)  
+            bookings = await uow.bookings.get_list(user_id)  
 
         return [
             BookingResponse.model_validate(booking) for booking in bookings

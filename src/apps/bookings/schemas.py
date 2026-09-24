@@ -1,12 +1,12 @@
 from typing import Optional
 
 from pydantic import BaseModel, Field
-from datetime import datetime
+from datetime import date, datetime
 
 class BookingCreate(BaseModel):
     room_id: int
-    start_time: datetime
-    end_time: datetime
+    check_in_date: date
+    check_out_date: date
 
 class BookingResponse(BookingCreate):
     id: int
