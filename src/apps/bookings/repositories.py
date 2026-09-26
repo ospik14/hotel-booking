@@ -1,6 +1,6 @@
-from datetime import datetime
+from datetime import date
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import insert, select
+from sqlalchemy import insert, select, delete, and_
 from sqlalchemy.exc import IntegrityError
 from .schemas import BookingCreate, BookingFilters
 from .models import Booking
@@ -36,4 +36,18 @@ class BookingRepository:
         result = await self.session.execute(stmt)
 
         return result.scalars().all()
+
+    async def delete(self, id: int, user_id: int):
+        stmt = delete(Booking) \
+        .where(
+            and_(
+                Booking.id == id,
+                Booking.user_id == user_id,
+                Booking.check_in_date > date.today()
+            )
+        )
+        result = await self.session.execute(stmt)
+
+        # Error handling
+
     

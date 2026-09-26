@@ -34,4 +34,3 @@ class RoomService:
             room = await uow.rooms.update(id, room_upd)
 
         return RoomResponse.model_validate(room)
-            

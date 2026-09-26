@@ -18,3 +18,7 @@ class BookingService:
         return [
             BookingResponse.model_validate(booking) for booking in bookings
         ]
+
+    async def delete_booking(self, id: int, user_id: int):
+        async with self.uow as uow:
+            await uow.bookings.delete(id, user_id)
