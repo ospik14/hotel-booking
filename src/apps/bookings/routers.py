@@ -16,5 +16,5 @@ async def get_bookings(service: booking_service, user_id: int): # temporarily
     return await service.get_bookings(user_id)
 
 @router.delete('/{id}/', status_code=status.HTTP_204_NO_CONTENT)
-async def delete_booking(service: booking_service, id: int, user_id: int): # temporarily
-    await service.delete_booking(id, user_id)
+async def cancel_booking(service: booking_service, id: int, user_id: int): # temporarily
+    await service.cancel_booking(id, user_id)

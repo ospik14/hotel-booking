@@ -15,3 +15,9 @@ class RoomNotExistsError(Exception):
 
 class IncompleteDataError(Exception):
     pass
+
+class BookingNotFoundError(Exception):
+    pass
+
+class CancelBookingTimeExpiredError(Exception):
+    pass
