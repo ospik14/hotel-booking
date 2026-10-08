@@ -56,7 +56,7 @@ class BookingRepository:
                 Booking.id == id,
                 Booking.user_id == user_id,
             )
-        ) \
+        ) 
 
         await self.session.execute(stmt)
 
