@@ -2,7 +2,8 @@ from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from .exceptions import RoomAlreadyExistsError, RoomNotFoundError, \
 EmptyRequestForUpdateError, BookingOverlapError, RoomNotExistsError, \
-IncompleteDataError, BookingNotFoundError, CancelBookingTimeExpiredError
+IncompleteDataError, BookingNotFoundError, CancelBookingTimeExpiredError, \
+WrongCredentialsError
 
 async def room_alredy_exists(request, exc):
     return JSONResponse(
@@ -52,6 +53,12 @@ async def cancel_booking_time_expired(request, exc):
         content={'detail': 'the time for canceling has expired'}
     )
 
+async def wrong_credentials(request, exc):
+    return JSONResponse(
+            status_code=401, 
+            content={'detail': 'wrong credentials'}
+        )
+
 def setup_exception_handlers(app: FastAPI):
     app.add_exception_handler(RoomAlreadyExistsError, room_alredy_exists)
     app.add_exception_handler(RoomNotFoundError, room_not_found)
@@ -61,3 +68,4 @@ def setup_exception_handlers(app: FastAPI):
     app.add_exception_handler(IncompleteDataError, incomplete_data)
     app.add_exception_handler(BookingNotFoundError, booking_not_found)
     app.add_exception_handler(CancelBookingTimeExpiredError, cancel_booking_time_expired)
+    app.add_exception_handler(WrongCredentialsError, wrong_credentials)
