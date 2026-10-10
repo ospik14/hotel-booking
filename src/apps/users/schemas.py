@@ -1,8 +1,23 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+from datetime import datetime
 
 class UserLogin(BaseModel):
+    email: str = Field(max_length=255)
+    password: str = Field(max_length=255)
+
+class UserRegister(UserLogin):
+    first_name: str = Field(max_length=255)
+    last_name: str = Field(max_length=255)
+
+class UserResponse(BaseModel):
+    id: int
+    first_name: str
+    last_name: str
     email: str
-    password: str
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
 
 class Token(BaseModel):
     access_token: str

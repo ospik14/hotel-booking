@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 from datetime import timedelta, datetime, timezone
 from passlib.context import CryptContext
+from passlib.exc import UnknownHashError
 from jose import jwt, JWTError
 
 load_dotenv()
@@ -15,7 +16,10 @@ def hash_password(password: str):
     return argon_context.hash(password)
 
 def verify_password(hashed_password: str, password: str):
-    return argon_context.verify(password, hashed_password)
+    try:
+        return argon_context.verify(password, hashed_password)
+    except UnknownHashError:
+        return False
 
 def create_token(data: dict, expires_time: timedelta):
     encode = data.copy()

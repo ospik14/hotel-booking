@@ -1,5 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, insert
+from sqlalchemy.exc import IntegrityError
 from .models import User
 
 class UserRepository:
@@ -11,3 +12,12 @@ class UserRepository:
         result = await self.session.execute(stmt)
 
         return result.scalar_one_or_none()
+
+    async def create(self, user_data: dict):
+        try:
+            stmt = insert(User).values(**user_data).returning(User)
+            result = await self.session.execute(stmt)
+        except IntegrityError:
+            raise #!!!
+
+        return result.scalar_one()
