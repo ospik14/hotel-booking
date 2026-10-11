@@ -22,5 +22,8 @@ class BookingNotFoundError(Exception):
 class CancelBookingTimeExpiredError(Exception):
     pass
 
-class WrongCredentialsError(Exception):
+class InvalidCredentialsError(Exception):
+    pass
+
+class UserAlreadyExistsError(Exception):
     pass

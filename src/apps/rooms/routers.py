@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends
 from .deps import room_service
 from .schemas import RoomCreate, RoomResponse, RoomFilters, RoomUpdate
+from apps.users.deps import current_user
 
 router = APIRouter(
     prefix='/rooms',
@@ -17,7 +18,8 @@ async def create_room(
 @router.get('/{id}/')
 async def get_room_by_id(
     id: int, 
-    serviсe: room_service
+    serviсe: room_service,
+    user: current_user
 ) -> RoomResponse:
     return await serviсe.get_room_by_id(id)
 

@@ -1,8 +1,9 @@
 from datetime import timedelta
 from core.db.uow import UnitOfWork
 from .schemas import UserLogin, UserRegister, UserResponse
-from core.exceptions import WrongCredentialsError
-from core.security import verify_password, create_token, hash_password
+from core.exceptions import InvalidCredentialsError
+from core.security import verify_password, create_token, hash_password, \
+decode_token
 
 class UserService:
     def __init__(self, uow: UnitOfWork):
@@ -10,13 +11,13 @@ class UserService:
 
     async def authenticate_user(self, user_data: UserLogin):
         async with self.uow as uow:
-            user = await uow.users.get(user_data.username)
+            user = await uow.users.get_by_email(user_data.username)
 
         if user is None:
-            raise WrongCredentialsError()
+            raise InvalidCredentialsError()
 
         if not verify_password(user.hashed_password, user_data.password):
-           raise WrongCredentialsError()
+           raise InvalidCredentialsError()
 
         token_data = {
             'sub': str(user.id),
@@ -25,8 +26,8 @@ class UserService:
         token = create_token(token_data, timedelta(minutes=20))
 
         return {
-        'access_token': token,
-        'token_type': 'bearer'
+            'access_token': token,
+            'token_type': 'bearer'
         }
 
     async def create_user(self, user_data: UserRegister):
@@ -44,4 +45,13 @@ class UserService:
 
         return UserResponse.model_validate(user)
 
-            
+    async def verify_user(self, token: str):
+        token_payload = decode_token(token)
+        user_id = token_payload.get('sub')
+        async with self.uow as uow:
+            current_user = await uow.users.get_by_id(int(user_id))
+
+        if not current_user:
+            raise InvalidCredentialsError()
+
+        return UserResponse.model_validate(current_user)

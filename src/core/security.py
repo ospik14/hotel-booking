@@ -4,6 +4,7 @@ from datetime import timedelta, datetime, timezone
 from passlib.context import CryptContext
 from passlib.exc import UnknownHashError
 from jose import jwt, JWTError
+from .exceptions import InvalidCredentialsError
 
 load_dotenv()
 
@@ -28,3 +29,18 @@ def create_token(data: dict, expires_time: timedelta):
     token = jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM)
 
     return token
+
+def decode_token(token: str):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id = payload.get('sub')
+        type = payload.get('type')
+
+        if not user_id or not type:
+            raise InvalidCredentialsError()
+        
+    except JWTError:
+        raise InvalidCredentialsError()
+
+    return payload
+        
