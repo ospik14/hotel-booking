@@ -29,7 +29,7 @@ class Booking(Base):
     __table_args__ = (
         ExcludeConstraint(
             ('room_id', '='),
-            (text('datarange(check_in_date, check_out_date)'), '&&'),
+            (text('daterange(check_in_date, check_out_date)'), '&&'),
             
             name='no_overlapping_booking',
             using='gist'

@@ -11,7 +11,7 @@ class UserService:
 
     async def authenticate_user(self, user_data: UserLogin):
         async with self.uow as uow:
-            user = await uow.users.get_by_email(user_data.username)
+            user = await uow.users.get_by_email(user_data.email)
 
         if user is None:
             raise InvalidCredentialsError()
@@ -46,7 +46,11 @@ class UserService:
         return UserResponse.model_validate(user)
 
     async def verify_user(self, token: str):
-        token_payload = decode_token(token)
+        try:
+            token_payload = decode_token(token)
+        except ValueError:
+            raise InvalidCredentialsError()
+        
         user_id = token_payload.get('sub')
         async with self.uow as uow:
             current_user = await uow.users.get_by_id(int(user_id))

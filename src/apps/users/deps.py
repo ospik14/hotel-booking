@@ -15,7 +15,7 @@ def get_user_service(
 
 async def get_current_user(
         service: Annotated[UserService, Depends(get_user_service)],
-        token: str = oauth2_scheme
+        token: Annotated[str, Depends(oauth2_scheme)]
     ):
     return await service.verify_user(token)
 

@@ -4,7 +4,6 @@ from datetime import timedelta, datetime, timezone
 from passlib.context import CryptContext
 from passlib.exc import UnknownHashError
 from jose import jwt, JWTError
-from .exceptions import InvalidCredentialsError
 
 load_dotenv()
 
@@ -37,10 +36,10 @@ def decode_token(token: str):
         type = payload.get('type')
 
         if not user_id or not type:
-            raise InvalidCredentialsError()
+            raise ValueError("Invalid token payload")
         
     except JWTError:
-        raise InvalidCredentialsError()
+        raise ValueError("Invalid token payload")
 
     return payload
         

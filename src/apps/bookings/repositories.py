@@ -10,12 +10,12 @@ class BookingRepository:
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def create(self, booking: BookingCreate):
+    async def create(self, booking: BookingCreate, user_id: int):
         try:
             stmt = insert(Booking) \
             .values(
                 **booking.model_dump(), 
-                user_id=1
+                user_id=user_id
             ) \
             .returning(Booking)
             
