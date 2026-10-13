@@ -4,7 +4,7 @@ from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from core.db.uow import UnitOfWork
 from core.global_deps import get_uow
 from .services import UserService
-from .schemas import UserResponse
+from .schemas import CurrentUser
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='users/login')
 
@@ -23,4 +23,4 @@ async def get_current_user(
 
 user_service = Annotated[UserService, Depends(get_user_service)]
 login_form = Annotated[OAuth2PasswordRequestForm, Depends()]
-current_user = Annotated[UserResponse, Depends(get_current_user)]
+current_user = Annotated[CurrentUser, Depends(get_current_user)]

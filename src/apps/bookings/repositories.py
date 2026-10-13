@@ -1,7 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import insert, select, delete, and_
+from sqlalchemy.orm import joinedload
 from sqlalchemy.exc import IntegrityError
-from .schemas import BookingCreate, BookingFilters
+from .schemas import BookingCreate
 from .models import Booking
 from core.exceptions import BookingOverlapError, RoomNotExistsError, \
 CancelBookingTimeExpiredError
@@ -44,7 +45,10 @@ class BookingRepository:
         return result.scalar_one_or_none()
 
     async def get_list(self, user_id: int):
-        stmt = select(Booking).where(Booking.user_id == user_id)
+        stmt = select(Booking) \
+        .options(joinedload(Booking.room)) \
+        .where(Booking.user_id == user_id)
+        
         result = await self.session.execute(stmt)
 
         return result.scalars().all()

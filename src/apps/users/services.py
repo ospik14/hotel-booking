@@ -1,6 +1,6 @@
 from datetime import timedelta
 from core.db.uow import UnitOfWork
-from .schemas import UserLogin, UserRegister, UserResponse
+from .schemas import UserLogin, UserRegister, UserResponse, CurrentUser
 from core.exceptions import InvalidCredentialsError
 from core.security import verify_password, create_token, hash_password, \
 decode_token
@@ -58,4 +58,4 @@ class UserService:
         if not current_user:
             raise InvalidCredentialsError()
 
-        return UserResponse.model_validate(current_user)
+        return CurrentUser.model_validate(current_user)

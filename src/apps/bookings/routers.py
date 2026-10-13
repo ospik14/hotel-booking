@@ -1,5 +1,5 @@
 from fastapi import APIRouter, status
-from .schemas import BookingCreate, BookingFilters
+from .schemas import BookingCreate
 from .deps import booking_service
 from apps.users.deps import current_user
 

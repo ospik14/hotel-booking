@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 from typing import Optional
 from datetime import date
 from core.exceptions import IncompleteDataError
@@ -10,8 +10,7 @@ class RoomCreate(BaseModel):
 class RoomResponse(RoomCreate):
     id: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class RoomFilters(BaseModel):
     name_contains: Optional[str] = Field(default=None)
