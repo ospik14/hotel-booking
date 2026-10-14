@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from .exceptions import RoomAlreadyExistsError, RoomNotFoundError, \
 EmptyRequestForUpdateError, BookingOverlapError, RoomNotExistsError, \
 IncompleteDataError, BookingNotFoundError, CancelBookingTimeExpiredError, \
-InvalidCredentialsError, UserAlreadyExistsError
+InvalidCredentialsError, UserAlreadyExistsError, AccessDeniedError
 
 async def room_alredy_exists(request, exc):
     return JSONResponse(
@@ -65,6 +65,12 @@ async def user_alredy_exists(request, exc):
         content={'detail': 'user alredy exists'}
     )
 
+async def access_denied(request, exc):
+    return JSONResponse(
+        status_code=403,
+        content={'detail': 'access denied'}
+    )
+
 def setup_exception_handlers(app: FastAPI):
     app.add_exception_handler(RoomAlreadyExistsError, room_alredy_exists)
     app.add_exception_handler(RoomNotFoundError, room_not_found)
@@ -76,3 +82,4 @@ def setup_exception_handlers(app: FastAPI):
     app.add_exception_handler(CancelBookingTimeExpiredError, cancel_booking_time_expired)
     app.add_exception_handler(InvalidCredentialsError, invalid_credentials)
     app.add_exception_handler(UserAlreadyExistsError, user_alredy_exists)
+    app.add_exception_handler(AccessDeniedError, access_denied)

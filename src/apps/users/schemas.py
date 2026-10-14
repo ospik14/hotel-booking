@@ -1,5 +1,6 @@
 from pydantic import BaseModel, ConfigDict, Field
 from datetime import datetime
+from .models import Role
 
 class UserLogin(BaseModel):
     email: str = Field(max_length=255)
@@ -8,6 +9,7 @@ class UserLogin(BaseModel):
 class UserRegister(UserLogin):
     first_name: str = Field(max_length=255)
     last_name: str = Field(max_length=255)
+    role: Role
 
 class UserResponse(BaseModel):
     id: int
@@ -20,6 +22,7 @@ class UserResponse(BaseModel):
 
 class CurrentUser(BaseModel):
     id: int
+    role: Role
 
     model_config = ConfigDict(from_attributes=True)
 

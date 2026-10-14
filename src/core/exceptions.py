@@ -27,3 +27,6 @@ class InvalidCredentialsError(Exception):
 
 class UserAlreadyExistsError(Exception):
     pass
+
+class AccessDeniedError(Exception):
+    pass

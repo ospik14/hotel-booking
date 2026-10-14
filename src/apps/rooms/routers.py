@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from .deps import room_service
 from .schemas import RoomCreate, RoomResponse, RoomFilters, RoomUpdate
-from apps.users.deps import current_user
+from apps.users.deps import current_user, current_admin
 
 router = APIRouter(
     prefix='/rooms',
@@ -11,7 +11,8 @@ router = APIRouter(
 @router.post('/')
 async def create_room(
     room_request: RoomCreate, 
-    service: room_service
+    service: room_service,
+    user: current_admin
 ) -> RoomResponse:
     return await service.create_room(room_request)
 
@@ -34,6 +35,7 @@ async def get_rooms(
 async def update_room(
     id: int, 
     room_upd: RoomUpdate, 
-    service: room_service
+    service: room_service,
+    user: current_admin
 ) -> RoomResponse:
     return await service.update_room(id, room_upd)
