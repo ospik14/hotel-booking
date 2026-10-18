@@ -66,7 +66,20 @@ PYTHONPATH=src uvicorn main:app --reload --app-dir src
 
 Документація: `http://localhost:8000/docs`
 
-### 7. Тести
+### 7. Frontend
+
+У репозиторії є окремий React + TypeScript frontend у директорії `frontend/`.
+
+```bash
+cd frontend
+cp .env.example .env
+npm install
+npm run dev -- --host 0.0.0.0
+```
+
+Frontend очікує, що FastAPI сервер працює на `http://localhost:8000`. Параметр `VITE_API_URL` задається у `frontend/.env`.
+
+### 8. Тести
 
 Потрібен запущений PostgreSQL з застосованими міграціями.
 
