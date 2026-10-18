@@ -10,18 +10,26 @@ from alembic import context
 import sys
 import os
 
+from dotenv import load_dotenv
+
+load_dotenv()
 
 current_path = os.path.dirname(os.path.abspath(__file__))
 root_path = os.path.join(current_path, '..')
 sys.path.insert(0, root_path)
+sys.path.insert(0, os.path.join(root_path, 'src'))
 
 
-from src.core.db.session import Base
-from src.apps.rooms.models import Room
-from src.apps.bookings.models import Booking
-from src.apps.users.models import User
+from core.db.session import Base
+from apps.rooms.models import Room
+from apps.bookings.models import Booking
+from apps.users.models import User
 
 config = context.config
+
+database_url = os.getenv('DATABASE_URL')
+if database_url:
+    config.set_main_option('sqlalchemy.url', database_url)
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)

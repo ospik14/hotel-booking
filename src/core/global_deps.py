@@ -1,6 +1,6 @@
 from core.db.uow import UnitOfWork
-from core.db.session import session_maker
+from core.db import session as db_session
+
 
 def get_uow() -> UnitOfWork:
-    return UnitOfWork(session_maker=session_maker)
-
+    return UnitOfWork(session_maker=db_session.session_maker)

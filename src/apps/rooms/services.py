@@ -1,6 +1,17 @@
+from datetime import date
 from core.db.uow import UnitOfWork
-from .schemas import RoomCreate, RoomResponse, RoomFilters, RoomUpdate
-from core.exceptions import EmptyRequestForUpdateError
+from .schemas import (
+    RoomCreate,
+    RoomResponse,
+    RoomFilters,
+    RoomUpdate,
+    AvailableRoomsFilters,
+)
+from core.exceptions import (
+    EmptyRequestForUpdateError,
+    RoomHasActiveBookingsError,
+)
+
 
 class RoomService:
     def __init__(self, uow: UnitOfWork):
@@ -18,19 +29,38 @@ class RoomService:
 
         return RoomResponse.model_validate(room)
 
-    async def get_rooms(self, filters: RoomFilters) -> RoomResponse:
+    async def get_rooms(self, filters: RoomFilters) -> list[RoomResponse]:
         async with self.uow as uow:
             rooms = await uow.rooms.get_list(filters)
 
-        return [
-            RoomResponse.model_validate(room) for room in rooms
-        ]
+        return [RoomResponse.model_validate(room) for room in rooms]
+
+    async def get_available_rooms(
+        self, filters: AvailableRoomsFilters
+    ) -> list[RoomResponse]:
+        async with self.uow as uow:
+            rooms = await uow.rooms.get_available(filters)
+
+        return [RoomResponse.model_validate(room) for room in rooms]
 
     async def update_room(self, id: int, room_upd: RoomUpdate) -> RoomResponse:
-        if not room_upd.name and not room_upd.capacity:
+        if not room_upd.model_dump(exclude_unset=True):
             raise EmptyRequestForUpdateError()
-        
+
         async with self.uow as uow:
+            if room_upd.capacity is not None:
+                conflicting = await uow.rooms.count_future_confirmed_with_guests_gt(
+                    id, room_upd.capacity, date.today()
+                )
+                if conflicting:
+                    raise RoomHasActiveBookingsError()
+
             room = await uow.rooms.update(id, room_upd)
+
+        return RoomResponse.model_validate(room)
+
+    async def deactivate_room(self, id: int) -> RoomResponse:
+        async with self.uow as uow:
+            room = await uow.rooms.deactivate(id)
 
         return RoomResponse.model_validate(room)
