@@ -1,6 +1,7 @@
 from apps.rooms.repositories import RoomRepository
 from apps.bookings.repositories import BookingRepository
 from apps.users.repositories import UserRepository
+from apps.hotels.repositories import HotelRepository
 
 
 class UnitOfWork:
@@ -12,6 +13,7 @@ class UnitOfWork:
         self.rooms = RoomRepository(session=self.session)
         self.bookings = BookingRepository(session=self.session)
         self.users = UserRepository(session=self.session)
+        self.hotels = HotelRepository(session=self.session)
         return self 
 
     async def __aexit__(self, exc_type, exc, tb):
