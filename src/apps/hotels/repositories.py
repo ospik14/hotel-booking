@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import insert
 from .models import Hotel
 
-class HotelRepository():
+class HotelRepository:
     def __init__(self, session: AsyncSession):
         self.session = session
 

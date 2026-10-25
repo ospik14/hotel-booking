@@ -29,10 +29,11 @@ login_form = Annotated[OAuth2PasswordRequestForm, Depends()]
 current_user = Annotated[CurrentUser, Depends(get_current_user)]
 
 
-async def get_current_admin(user: current_user):
-    if user.role != Role.ADMIN:
-        raise AccessDeniedError()
-    return user
+class RoleChecker:
+    def __init__(self, allowed_roles: list[Role]):
+        self.allowed_roles = allowed_roles
 
-
-current_admin = Annotated[CurrentUser, Depends(get_current_admin)]
+    def __call__(self, user: current_user):
+        if user.role not in self.allowed_roles:
+            raise AccessDeniedError()
+        return user

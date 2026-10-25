@@ -10,7 +10,8 @@ if TYPE_CHECKING:
 
 
 class Role(enum.Enum):
-    ADMIN = 'admin'
+    SUPER_ADMIN = 'super_admin'
+    HOTEL_ADMIN = 'hotel_admin'
     USER = 'user'
 
 
