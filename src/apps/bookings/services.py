@@ -38,8 +38,8 @@ class BookingService:
         booking_request: BookingCreate,
         user: CurrentUser,
     ):
-        if not user.is_active:
-            raise AccessDeniedError()
+        #if not user.is_active:
+        #    raise AccessDeniedError()
 
         self._validate_dates(
             booking_request.check_in_date,
@@ -77,7 +77,7 @@ class BookingService:
 
     async def get_booking(self, id: int, user: CurrentUser):
         async with self.uow as uow:
-            if user.role == Role.ADMIN:
+            if user.role == Role.HOTEL_ADMIN:
                 booking = await uow.bookings.get_by_id(id)
             else:
                 booking = await uow.bookings.get_for_user(id, user.id)
@@ -97,7 +97,7 @@ class BookingService:
 
     async def cancel_booking(self, id: int, user: CurrentUser):
         async with self.uow as uow:
-            if user.role == Role.ADMIN:
+            if user.role == Role.HOTEL_ADMIN:
                 booking = await uow.bookings.get_by_id(id)
             else:
                 booking = await uow.bookings.get_for_user(id, user.id)
@@ -108,7 +108,7 @@ class BookingService:
                 raise BookingAlreadyCancelledError()
             if booking.status == BookingStatus.COMPLETED:
                 raise InvalidBookingStatusError('completed booking cannot be cancelled')
-            if user.role != Role.ADMIN and booking.check_in_date <= date.today():
+            if user.role != Role.HOTEL_ADMIN and booking.check_in_date <= date.today():
                 raise CancelBookingTimeExpiredError()
 
             await uow.bookings.set_status(id, BookingStatus.CANCELLED)

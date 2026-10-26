@@ -9,4 +9,4 @@ def get_hotel_service(
 ) -> HotelService:
     return HotelService(uow=uow)
 
-booking_service = Annotated[HotelService, Depends(get_hotel_service)]
+hotel_service = Annotated[HotelService, Depends(get_hotel_service)]

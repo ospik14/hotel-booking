@@ -34,6 +34,6 @@ class RoleChecker:
         self.allowed_roles = allowed_roles
 
     def __call__(self, user: current_user):
-        if user.role not in self.allowed_roles:
+        if user.role not in self.allowed_roles or not user.is_active:
             raise AccessDeniedError()
         return user
