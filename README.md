@@ -1,6 +1,7 @@
-# Hotel Booking API
+# Hotel Booking 
 
 Backend для бронювання готельних номерів на FastAPI + SQLAlchemy 2 (async) + PostgreSQL.
+P.S. в майбутньому повноцінний saas проект з фронтендом
 
 ## Стек
 
