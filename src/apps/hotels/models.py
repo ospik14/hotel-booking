@@ -15,3 +15,15 @@ class Hotel(Base):
         DateTime(timezone=True),
             server_default=func.now(),
     )
+
+class HotelImage(Base):
+    __tablename__='hotel_images'
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    url: Mapped[str] = mapped_column(String(255))
+    is_main: Mapped[bool] = mapped_column(default=False)
+    hotel_id: Mapped[int] = mapped_column(ForeignKey('hotels.id'))
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+    )

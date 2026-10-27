@@ -1,5 +1,5 @@
 from typing import Annotated
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, UploadFile, File
 from schemas import HotelCreate
 from apps.users.schemas import CurrentUser
 from apps.users.deps import RoleChecker
@@ -20,3 +20,14 @@ async def create_hotel(
     user: Annotated[CurrentUser, Depends(require_admin)]
 ):
     return await service.create_hotel(hotel, user)
+
+@router.post('/{id}/images/')
+async def upload_image(
+    service: hotel_service,
+    id: int,
+    file: Annotated[UploadFile, File()], 
+    user: Annotated[CurrentUser, Depends(require_admin)]
+):
+    file_bytes = await file.read()
+    filename = file.filename
+    await service.upload_image(file_bytes, user, filename, id)
