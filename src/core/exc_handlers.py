@@ -19,6 +19,7 @@ from .exceptions import (
     InvalidBookingStatusError,
     RoomHasActiveBookingsError,
     WrongPasswordError,
+    HotelNotExistsError
 )
 
 
@@ -147,6 +148,12 @@ async def wrong_password(request, exc):
         content={'detail': 'current password is incorrect'},
     )
 
+async def hotel_not_exists(request, exc):
+    return JSONResponse(
+        status_code=404,
+        content={'detail': 'this hotel does not exist'},
+    )
+
 
 def setup_exception_handlers(app: FastAPI):
     app.add_exception_handler(RoomAlreadyExistsError, room_already_exists)
@@ -167,3 +174,4 @@ def setup_exception_handlers(app: FastAPI):
     app.add_exception_handler(InvalidBookingStatusError, invalid_booking_status)
     app.add_exception_handler(RoomHasActiveBookingsError, room_has_active_bookings)
     app.add_exception_handler(WrongPasswordError, wrong_password)
+    app.add_exception_handler(HotelNotExistsError, hotel_not_exists)

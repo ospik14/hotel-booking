@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from apps.rooms.routers import router as room_router
 from apps.bookings.routers import router as booking_router
 from apps.users.routers import router as user_router
+from apps.hotels.routers import router as hotel_router
 from core.exc_handlers import setup_exception_handlers
 
 app = FastAPI(
@@ -28,5 +29,6 @@ app.add_middleware(
 app.include_router(router=room_router)
 app.include_router(router=booking_router)
 app.include_router(router=user_router)
+app.include_router(router=hotel_router)
 
 setup_exception_handlers(app)

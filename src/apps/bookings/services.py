@@ -38,8 +38,8 @@ class BookingService:
         booking_request: BookingCreate,
         user: CurrentUser,
     ):
-        #if not user.is_active:
-        #    raise AccessDeniedError()
+        if not user.is_active:
+            raise AccessDeniedError()
 
         self._validate_dates(
             booking_request.check_in_date,

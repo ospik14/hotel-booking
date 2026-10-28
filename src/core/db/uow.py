@@ -13,11 +13,6 @@ class UnitOfWork:
         
     async def __aenter__(self):
         self.session = self.session_maker()
-        if self.user_id is not None:
-            await self.session.execute(
-                text("SET LOCAL app.user_id = :user_id"),
-                {"user_id": self.user_id}
-            )
         self.rooms = RoomRepository(session=self.session)
         self.bookings = BookingRepository(session=self.session)
         self.users = UserRepository(session=self.session)

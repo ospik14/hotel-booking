@@ -1,9 +1,9 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends, UploadFile, File
-from schemas import HotelCreate
+from .schemas import HotelCreate
 from apps.users.schemas import CurrentUser
 from apps.users.deps import RoleChecker
-from deps import hotel_service
+from .deps import hotel_service
 from apps.users.models import Role
 
 router = APIRouter(
@@ -12,7 +12,7 @@ router = APIRouter(
 )
 
 require_admin = RoleChecker([Role.SUPER_ADMIN, Role.HOTEL_ADMIN])
-\
+
 @router.post('/')
 async def create_hotel(
     service: hotel_service, 
@@ -25,9 +25,10 @@ async def create_hotel(
 async def upload_image(
     service: hotel_service,
     id: int,
+    is_main: bool,
     file: Annotated[UploadFile, File()], 
     user: Annotated[CurrentUser, Depends(require_admin)]
 ):
     file_bytes = await file.read()
     filename = file.filename
-    await service.upload_image(file_bytes, user, filename, id)
+    return await service.upload_image(file_bytes, is_main, filename, id)

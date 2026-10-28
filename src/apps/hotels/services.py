@@ -1,7 +1,8 @@
 from core.db.uow import UnitOfWork
-from schemas import HotelCreate, HotelResponse
+from .schemas import HotelCreate, HotelResponse
 from apps.users.schemas import CurrentUser
 from core.s3_client import upload_image_to_cloud
+from core.exceptions import HotelNotExistsError
 
 class HotelService:
     def __init__(self, uow: UnitOfWork):
@@ -13,9 +14,10 @@ class HotelService:
 
         return HotelResponse.model_validate(hotel)
 
-    async def upload_image(self, 
+    async def upload_image(
+        self, 
         file: bytes, 
-        user: CurrentUser, 
+        is_main_image: bool,
         filename: str, 
         hotel_id: int
     ):
@@ -25,8 +27,10 @@ class HotelService:
             hotel = await uow.hotels.get_by_id(hotel_id)
 
             if not hotel:
-                raise #!!!!
+                raise HotelNotExistsError()
+            if is_main_image:
+                await uow.hotels.update_image(hotel_id)
 
-            image = await uow.hotels.create_image(image_url, hotel_id)
+            await uow.hotels.create_image(image_url, hotel_id, is_main_image)
 
-        return image
+        return image_url

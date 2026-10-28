@@ -1,5 +1,5 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import insert, select
+from sqlalchemy import insert, select, update
 from .models import Hotel, HotelImage
 from .schemas import HotelCreate
 
@@ -25,14 +25,27 @@ class HotelRepository:
 
         return result.scalar_one_or_none()
 
-    async def create_image(self, image_url: str, hotel_id: int):
+    async def create_image(
+        self, 
+        image_url: str, 
+        hotel_id: int, 
+        is_main_image: bool
+    ):
         stmt = insert(HotelImage) \
         .values(
             url=image_url,
-            hotel_id=hotel_id
+            hotel_id=hotel_id,
+            is_main=is_main_image
         ) \
         .returning(HotelImage)
 
         result = await self.session.execute(stmt)
 
         return result.scalar_one()
+
+    async def update_image(self, hotel_id: int):
+        stmt = update(HotelImage) \
+        .where(HotelImage.hotel_id == hotel_id) \
+        .values(is_main = False)
+
+        await self.session.execute(stmt)

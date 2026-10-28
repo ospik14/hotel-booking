@@ -24,6 +24,7 @@ from core.db.session import Base
 from apps.rooms.models import Room
 from apps.bookings.models import Booking
 from apps.users.models import User
+from apps.hotels.models import Hotel, HotelImage
 
 config = context.config
 

@@ -1,4 +1,7 @@
+from typing import Annotated
 from fastapi import APIRouter, Depends, status
+from apps.users.schemas import CurrentUser
+from apps.users.models import Role
 from .schemas import (
     BookingCreate,
     BookingResponse,
@@ -7,13 +10,14 @@ from .schemas import (
     BookingStatusUpdate,
 )
 from .deps import booking_service
-from apps.users.deps import current_user, current_admin
+from apps.users.deps import RoleChecker, current_user
 
 router = APIRouter(
     prefix='/booking',
     tags=['booking'],
 )
 
+require_admin = RoleChecker([Role.SUPER_ADMIN, Role.HOTEL_ADMIN])
 
 @router.post(
     '/',
@@ -40,7 +44,7 @@ async def get_bookings(
 @router.get('/', response_model=list[BookingResponse])
 async def get_all_bookings(
     service: booking_service,
-    user: current_admin,
+    user: Annotated[CurrentUser, Depends(require_admin)],
     filters: AdminBookingFilters = Depends(),
 ):
     return await service.get_admin_bookings(filters)
@@ -69,6 +73,6 @@ async def update_booking_status(
     id: int,
     status_update: BookingStatusUpdate,
     service: booking_service,
-    user: current_admin,
+    user: Annotated[CurrentUser, Depends(require_admin)],
 ):
     return await service.update_status(id, status_update)

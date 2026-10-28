@@ -1,4 +1,7 @@
+from typing import Annotated
 from fastapi import APIRouter, Depends, status
+from apps.users.models import Role
+from apps.users.schemas import CurrentUser
 from .deps import room_service
 from .schemas import (
     RoomCreate,
@@ -7,13 +10,14 @@ from .schemas import (
     RoomUpdate,
     AvailableRoomsFilters,
 )
-from apps.users.deps import current_user, current_admin
+from apps.users.deps import current_user, RoleChecker
 
 router = APIRouter(
     prefix='/rooms',
     tags=['rooms'],
 )
 
+require_admin = RoleChecker([Role.SUPER_ADMIN, Role.HOTEL_ADMIN])
 
 @router.post(
     '/',
@@ -23,7 +27,7 @@ router = APIRouter(
 async def create_room(
     room_request: RoomCreate,
     service: room_service,
-    user: current_admin,
+    user: Annotated[CurrentUser, Depends(require_admin)],
 ) -> RoomResponse:
     return await service.create_room(room_request)
 
@@ -58,7 +62,7 @@ async def update_room(
     id: int,
     room_upd: RoomUpdate,
     service: room_service,
-    user: current_admin,
+    user: Annotated[CurrentUser, Depends(require_admin)],
 ) -> RoomResponse:
     return await service.update_room(id, room_upd)
 
@@ -67,6 +71,6 @@ async def update_room(
 async def deactivate_room(
     id: int,
     service: room_service,
-    user: current_admin,
+    user: Annotated[CurrentUser, Depends(require_admin)],
 ) -> RoomResponse:
     return await service.deactivate_room(id)

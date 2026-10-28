@@ -68,3 +68,7 @@ class RoomHasActiveBookingsError(Exception):
 
 class WrongPasswordError(Exception):
     pass
+
+
+class HotelNotExistsError(Exception):
+    pass
