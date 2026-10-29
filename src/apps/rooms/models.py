@@ -1,7 +1,16 @@
 from datetime import datetime
 from decimal import Decimal
 from typing import TYPE_CHECKING, Optional
-from sqlalchemy import String, CheckConstraint, Numeric, Text, Boolean, DateTime, func
+from sqlalchemy import (
+    String, 
+    CheckConstraint, 
+    Numeric, 
+    Text, 
+    Boolean, 
+    DateTime, 
+    func, 
+    ForeignKey
+)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from core.db.session import Base
 
@@ -18,6 +27,7 @@ class Room(Base):
     capacity: Mapped[int] = mapped_column(nullable=False)
     price_per_night: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default='true')
+    hotel_id: Mapped[int] = mapped_column(ForeignKey('hotels.id'))
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),

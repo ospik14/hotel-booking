@@ -29,7 +29,7 @@ async def create_room(
     service: room_service,
     user: Annotated[CurrentUser, Depends(require_admin)],
 ) -> RoomResponse:
-    return await service.create_room(room_request)
+    return await service.create_room(room_request, user)
 
 
 @router.get('/available/', response_model=list[RoomResponse])

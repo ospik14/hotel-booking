@@ -10,6 +10,7 @@ class RoomCreate(BaseModel):
     capacity: int = Field(gt=0)
     price_per_night: Decimal = Field(ge=0, max_digits=10, decimal_places=2)
     is_active: bool = True
+    hotel_id: int
 
 
 class RoomResponse(BaseModel):
@@ -21,6 +22,7 @@ class RoomResponse(BaseModel):
     is_active: bool
     created_at: datetime
     updated_at: datetime
+    hotel_id: int
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -35,8 +37,10 @@ class RoomFilters(BaseModel):
     is_active: Optional[bool] = Field(default=None)
     check_in: Optional[date] = Field(default=None)
     check_out: Optional[date] = Field(default=None)
+    hotel_id: Optional[int] = Field(default=None)
     limit: int = Field(default=50, ge=1, le=100)
     offset: int = Field(default=0, ge=0)
+    
 
     @model_validator(mode='after')
     def check_both_or_none(self):
@@ -53,6 +57,7 @@ class AvailableRoomsFilters(BaseModel):
     guests: Optional[int] = Field(default=None, gt=0)
     price_gte: Optional[Decimal] = Field(default=None, ge=0)
     price_lte: Optional[Decimal] = Field(default=None, ge=0)
+    hotel_id: Optional[int] = Field(default=None)
     limit: int = Field(default=50, ge=1, le=100)
     offset: int = Field(default=0, ge=0)
 
