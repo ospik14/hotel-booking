@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import DateTime, String, ForeignKey, func
 from core.db.session import Base
 
@@ -15,6 +15,7 @@ class Hotel(Base):
         DateTime(timezone=True),
             server_default=func.now(),
     )
+    images: Mapped[list['HotelImage']] = relationship(back_populates='hotel')
 
 class HotelImage(Base):
     __tablename__='hotel_images'
@@ -27,3 +28,4 @@ class HotelImage(Base):
         DateTime(timezone=True),
         server_default=func.now(),
     )
+    hotel: Mapped['Hotel'] = relationship(back_populates='images')

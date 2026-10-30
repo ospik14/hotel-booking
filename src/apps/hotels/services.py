@@ -34,3 +34,9 @@ class HotelService:
             await uow.hotels.create_image(image_url, hotel_id, is_main_image)
 
         return image_url
+
+    async def get_hotels(self):
+        async with self.uow as uow:
+            hotels = await uow.hotels.get_list()
+
+        return [HotelResponse.model_validate(hotel) for hotel in hotels]

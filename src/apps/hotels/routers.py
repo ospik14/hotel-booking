@@ -32,3 +32,7 @@ async def upload_image(
     file_bytes = await file.read()
     filename = file.filename
     return await service.upload_image(file_bytes, is_main, filename, id)
+
+@router.get('/')
+async def get_hotels(service: hotel_service):
+    return await service.get_hotels()

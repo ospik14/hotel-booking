@@ -1,5 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import insert, select, update
+from sqlalchemy.orm import selectinload
 from .models import Hotel, HotelImage
 from .schemas import HotelCreate
 
@@ -25,6 +26,13 @@ class HotelRepository:
 
         return result.scalar_one_or_none()
 
+    async def get_list(self):
+        stmt = select(Hotel) \
+        .options(selectinload(Hotel.images))
+        result = await self.session.execute(stmt)
+        
+        return result.scalars().all()
+
     async def create_image(
         self, 
         image_url: str, 
@@ -49,3 +57,5 @@ class HotelRepository:
         .values(is_main = False)
 
         await self.session.execute(stmt)
+
+    
